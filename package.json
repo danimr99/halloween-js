@@ -1,0 +1,19 @@
+{
+  "name": "halloween-js",
+  "version": "1.0.0",
+  "description": "Soluciones al HallowenJS de @midudev en JavaScript",
+  "type": "module",
+  "scripts": {},
+  "keywords": [
+    "halloween-js",
+    "halloween",
+    "challenges",
+    "javascript"
+  ],
+  "author": "Daniel Muelle Ramos",
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/danimr99/halloween-js"
+  }
+}
