@@ -19,30 +19,31 @@
  */
 function findSafestPath(dream) {
   const rows = dream.length;
-  const columns = dream[0].length;
-  const pathTracker = new Array(rows)
-    .fill(0)
-    .map(() => new Array(columns).fill(0));
+  const cols = dream[0].length;
 
-  pathTracker[0][0] = dream[0][0];
+  let currRow = new Array(cols).fill(Infinity);
 
-  for (let row = 1; row < rows; row++) {
-    pathTracker[row][0] = pathTracker[row - 1][0] + dream[row][0];
+  // The first row is a base case: we can't get to those cells moving down
+  currRow[0] = dream[0][0];
+
+  for (let j = 1; j < cols; j++) {
+    currRow[j] = dream[0][j] + currRow[j - 1];
   }
 
-  for (let column = 1; column < columns; column++) {
-    pathTracker[0][column] = pathTracker[0][column - 1] + dream[0][column];
-  }
-
-  for (let row = 1; row < rows; row++) {
-    for (let column = 1; column < columns; column++) {
-      pathTracker[row][column] =
-        Math.min(pathTracker[row - 1][column], pathTracker[row][column - 1]) +
-        dream[row][column];
+  for (let i = 1; i < rows; i++) {
+    // Border cells can only be reached moving down from previous row
+    currRow[0] += dream[i][0];
+    for (let j = 1; j < cols; j++) {
+      // This value doesn't change yet because of the invariant
+      const topCell = currRow[j];
+      // This is already updated for the current row
+      const leftCell = currRow[j - 1];
+      // Check the best way to reach the current cell: moving down or right
+      currRow[j] = dream[i][j] + Math.min(topCell, leftCell);
     }
   }
 
-  return pathTracker[rows - 1][columns - 1];
+  return currRow[cols - 1];
 }
 
 // Test A
