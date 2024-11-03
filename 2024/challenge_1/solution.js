@@ -7,23 +7,22 @@
  * @returns {number[] | undefined} Indexes of the two potions that sum the target power
  */
 function createMagicPotion(potions, target) {
-  let bestMatch;
+  // Maps a potion power to its first appareance
+  let table = new Map();
 
-  for (let firstPotion = 0; firstPotion < potions.length; firstPotion++) {
-    for (
-      let secondPotion = firstPotion + 1;
-      secondPotion < potions.length;
-      secondPotion++
-    ) {
-      if (potions[firstPotion] + potions[secondPotion] === target) {
-        if (!bestMatch || secondPotion < bestMatch[1]) {
-          bestMatch = [firstPotion, secondPotion];
-        }
-      }
+  for (let i = 0; i < potions.length; i++) {
+    const complement = target - potions[i];
+
+    if (table.has(complement)) {
+      return [table.get(complement), i];
+    }
+
+    if (!table.has(potions[i])) {
+      table.set(potions[i], i);
     }
   }
 
-  return bestMatch;
+  return undefined;
 }
 
 // Test A
