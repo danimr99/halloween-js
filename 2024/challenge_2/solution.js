@@ -34,27 +34,21 @@
  * battleHorde("444", "282"); // -> "x"
  *
  * @function battleHorde
- * @param {string} zombies -
- * @param {string} humans
+ * @param {string} zombies - A string representing the power of zombies.
+ * @param {string} humans - A string representing the power of humans.
+ * @returns {string} Returns the remaining power of the last human or zombie.s
  */
-function battleHorde(zombies, humans) {
-  let totalZombiesPower = 0;
-  let totalHumansPower = 0;
+export function battleHorde(zombies, humans) {
+  let zombieTotal = 0;
+  let humanTotal = 0;
 
   for (let round = 0; round < zombies.length; round++) {
-    totalZombiesPower += parseInt(zombies[round]);
-    totalHumansPower += parseInt(humans[round]);
+    zombieTotal += +zombies[round];
+    humanTotal += +humans[round];
   }
 
-  const powerDifference = Math.abs(totalZombiesPower - totalHumansPower);
-
-  if (totalZombiesPower > totalHumansPower) {
-    return `${powerDifference}z`;
-  }
-
-  if (totalHumansPower > totalZombiesPower) {
-    return `${powerDifference}h`;
-  }
+  if (zombieTotal > humanTotal) return zombieTotal - humanTotal + "z";
+  if (zombieTotal < humanTotal) return humanTotal - zombieTotal + "h";
 
   return "x";
 }
