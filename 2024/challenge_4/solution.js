@@ -26,30 +26,12 @@
  * @returns {string} - The name or names of the killer.
  */
 function findTheKiller(whisper, suspects) {
-  let index = 0;
-  let unknownCount = 0;
-  let searchPattern = "^";
+  let formattedPattern = whisper.replace(/~/g, ".");
+  if (!formattedPattern.endsWith("$")) formattedPattern += "+";
 
-  while (index < whisper.length) {
-    if (whisper[index] !== "~") {
-      searchPattern += whisper[index];
-      index++;
-      continue;
-    }
+  const regex = new RegExp("^" + formattedPattern, "ig");
 
-    while (whisper[index] === "~") {
-      unknownCount++;
-      index++;
-    }
-
-    searchPattern += `[^~]{${unknownCount}}`;
-    unknownCount = 0;
-  }
-
-  const regex = new RegExp(searchPattern, "i");
-  const candidates = suspects.filter((suspect) => regex.test(suspect));
-
-  return candidates.length === 0 ? "" : candidates.join(",");
+  return suspects.filter((suspect) => suspect.match(regex) !== null).join(",");
 }
 
 // Test A
