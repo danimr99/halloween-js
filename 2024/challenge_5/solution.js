@@ -12,77 +12,54 @@
  * @returns {number} The number of steps it takes to Pyramid Head to reach you.
  */
 function escapePyramidHead(room) {
-  // Find the location of Pyramid Head and the player
-  let pyramidHeadPosition = null;
-  let playerPosition = null;
+  const n = room.length;
+  const m = room[0].length;
+  let start = null;
+  let target = null;
 
-  for (let row = 0; row < room.length; row++) {
-    for (let column = 0; column < room[row].length; column++) {
-      if (room[row][column] === "▲") {
-        pyramidHeadPosition = [row, column];
-      } else if (room[row][column] === "T") {
-        playerPosition = [row, column];
+  for (let i = 0; i < n; i++) {
+    for (let j = 0; j < m; j++) {
+      if (room[i][j] === "▲") {
+        start = [i, j];
+      } else if (room[i][j] === "T") {
+        target = [i, j];
       }
     }
   }
 
-  // If either Pyramid Head or the player is not in the room, return -1
-  if (!pyramidHeadPosition || !playerPosition) {
-    return -1;
-  }
-
-  // Create a queue to keep track of the possible paths
-  const queue = [[pyramidHeadPosition, 0]];
-  const visited = new Set();
-  visited.add(pyramidHeadPosition.join(","));
-
-  // Define the directions Pyramid Head can move
+  const visited = new Set(`${start[0]},${start[1]}`);
+  const queue = [{ x: start[0], y: start[1], steps: 0 }];
   const directions = [
-    [0, 1], // right
-    [0, -1], // left
-    [1, 0], // down
-    [-1, 0], // up
+    [1, 0],
+    [-1, 0],
+    [0, 1],
+    [0, -1],
   ];
 
-  // While there are still paths to explore
-  while (queue.length) {
-    const [currentPosition, steps] = queue.shift();
+  while (queue.length > 0) {
+    const { x, y, steps } = queue.shift();
 
-    // If Pyramid Head reaches the player, return the number of steps
-    if (
-      currentPosition[0] === playerPosition[0] &&
-      currentPosition[1] === playerPosition[1]
-    ) {
-      return steps;
-    }
+    if (x === target[0] && y === target[1]) return steps;
+    visited.add(`${x},${y}`);
 
-    // Explore the possible paths
-    for (const direction of directions) {
-      const [rowOffset, colOffset] = direction;
-      const newRow = currentPosition[0] + rowOffset;
-      const newColumn = currentPosition[1] + colOffset;
+    for (const [dx, dy] of directions) {
+      const newx = x + dx;
+      const newy = y + dy;
 
-      // If the new position is within the room and not a wall
       if (
-        newRow >= 0 &&
-        newRow < room.length &&
-        newColumn >= 0 &&
-        newColumn < room[0].length &&
-        room[newRow][newColumn] !== "#"
+        newx >= 0 &&
+        newx < n &&
+        newy >= 0 &&
+        newy < m &&
+        !visited.has(`${newx},${newy}`)
       ) {
-        const newPosition = [newRow, newColumn];
-        const newPositionStr = newPosition.join(",");
-
-        // If the new position has not been visited
-        if (!visited.has(newPositionStr)) {
-          queue.push([newPosition, steps + 1]);
-          visited.add(newPositionStr);
+        if (room[newx][newy] !== "#") {
+          queue.push({ x: newx, y: newy, steps: steps + 1 });
         }
       }
     }
   }
 
-  // If Pyramid Head cannot reach the player, return -1
   return -1;
 }
 
